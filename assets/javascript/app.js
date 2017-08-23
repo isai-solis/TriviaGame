@@ -190,6 +190,7 @@ window.onload = function() {
   function endGame(){
     $("#allAnswers").hide();
     $("#startButton").show();
+    // $("#startButton").click(startTrivia);
     $("#question").html("Correct Answers: " + correct);
     $("#correctAnswer").html("Incorrect Answers: " + incorrect);
     $("#correctImages").html("Unanswered Questions: " + unanswered);
