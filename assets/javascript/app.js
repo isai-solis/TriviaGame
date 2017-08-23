@@ -120,10 +120,10 @@ window.onload = function() {
       
   }
 
-  $(".panel-body").on("click", function() {
-      console.log($(this).attr("value"));
+  $(".panel-body, answerPanel").on("click", function() {
+      console.log($(this).attr("val"));
       clearInterval(intervalId);
-      var value = $(this).attr("value");
+      var value = $(this).attr("val");
 
       if (value == fullQuestion[questionCount].correctValue ){
         answerCorrect();
