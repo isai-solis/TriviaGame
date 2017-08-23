@@ -3,7 +3,7 @@ var incorrect = 0;
 var unanswered = 0;
 var showQuestion;
 var questionCount = 0;
-var imageCount = 0;
+// var imageCount = 0;
 var intervalId;
 var activeQuestion = false;
 var correctPick;
@@ -54,7 +54,7 @@ var fullQuestion = [
                 "The Ethyl Corporation"],
         correctValue: "4",                
         correctAnswer: "D: The Ethyl Corporation",
-        image: "<img src = assests/images/ethyl.jpg width='400px' height='400px'></img>",
+        image: "<img src = assets/images/ethyl.jpg width='400px' height='400px'></img>",
     },
     {
         question: "From what highly used good was lead eventually removed from due the the discovery of the age of the earth?",
@@ -74,127 +74,132 @@ window.onload = function() {
     
     $("#instructions").html("<p>You will be given 30 seconds to answer each question.</p> <p>Unanswered questions will count against you.</p> <p>Click start to begin</p>");
     $("#startButton").click(startTrivia);
+    $("#correctAnswerContainer").hide();
+
 }
 
-function displayTimer(){ 
-  $("#timer").html("Time Remaining: " + timeRemaining);
-};  
+// $(document).ready(function(){
 
-var intervalId = setInterval(timeRemaining, 1000);
+  function displayTimer(){ 
+    $("#timer").html("Time Remaining: " + timeRemaining);
+  };  
 
-function startTimer (){
-  displayTimer();
-  timeRemaining--;
-  console.log(displayTimer);
-  if (timeRemaining == 0) {
-    clearInterval(intervalId);
-    timeRemaining = 30;
-    unansweredQuestion();
+  var intervalId = setInterval(timeRemaining, 1000);
+
+  function startTimer (){
+    displayTimer();
+    // intervalId = setInterval(timeRemaining, 1000);
+    timeRemaining--;
+    // console.log(displayTimer);
+    if (timeRemaining == 0) {
+      clearInterval(intervalId);
+      timeRemaining = 30;
+      unansweredQuestion();
+    }
   }
-}
 
-function startTrivia(){
-    $("#startButton").hide();
-    $("#instructions").hide();
+  function startTrivia(){
+      $("#startButton").hide();
+      $("#instructions").hide();
+      $("#correctAnswerContainer").hide();
+      $("#allAnswers").show();
+      displayQuestion();
+      startTimer();
+      intervalId = setInterval(startTimer, 1000);
+
+      
+  }
+
+  function displayQuestion() {
+      $("#question").html("<strong>" + fullQuestion[questionCount].question) + "</strong>";
+      $("#answer1").html(fullQuestion[questionCount].answers[0]);
+      $("#answer2").html(fullQuestion[questionCount].answers[1]);
+      $("#answer3").html(fullQuestion[questionCount].answers[2]);
+      $("#answer4").html(fullQuestion[questionCount].answers[3]);
+    
+      
+  }
+
+  $(".panel-body").on("click", function() {
+      console.log($(this).attr("value"));
+      clearInterval(intervalId);
+      var value = $(this).attr("value");
+
+      if (value == fullQuestion[questionCount].correctValue ){
+        answerCorrect();
+            
+      } 
+      else {
+          answerWrong ();
+      }
+  });    
+
+  function answerCorrect(){
+    correct++
+    $("#question").html("Correct Answer!")
+    displayCorrectImage();
+    clearInterval(intervalId);
+
+  }
+
+  function answerWrong(){
+    $("#question").html("Incorrect Answer!")
+    incorrect++
+    displayCorrectImage();
+    clearInterval(intervalId);
+
+  }
+
+  function unansweredQuestion(){
+    $("#question").html("Incorrect Answer!")
+    unanswered++
+    incorrect++
+    displayCorrectImage();
+    clearInterval(intervalId);
+  }
+
+
+
+  function displayCorrectImage() {
+    $("#allAnswers").hide();
+    $("#correctAnswerContainer").show();
+    
+    $("#correctAnswer").html("The Correct Answer is: " + fullQuestion[questionCount].correctAnswer);  
+    $("#correctImages").html(fullQuestion[questionCount].image);
+    questionCount++
+
+    if (questionCount === fullQuestion.length) {
+      questionCount = 0;
+      endGame();
+    }
+    else {
+      setTimeout(nextQuestion, 5000);
+
+    }
+  }
+
+  function nextQuestion(){
+    $("#correctAnswerContainer").hide();
     $("#allAnswers").show();
+    timeRemaining = 30;
     displayQuestion();
     startTimer();
     intervalId = setInterval(startTimer, 1000);
-
-    // setTimeout(displayQuestion, 30000);
-    // activeQuestion = false;
-}
-
-function displayQuestion() {
-    $("#question").html(fullQuestion[questionCount].question);
-    $("#answer1").html(fullQuestion[questionCount].answers[0]);
-    $("#answer2").html(fullQuestion[questionCount].answers[1]);
-    $("#answer3").html(fullQuestion[questionCount].answers[2]);
-    $("#answer4").html(fullQuestion[questionCount].answers[3]);
-   
-    
-}
-
-$(".checkbox").on("click", function() {
-    console.log($(this));
-    clearInterval(intervalId);
-    var value = $(this).attr("value");
-
-    if (value == fullQuestion[questionCount].correctValue ){
-      answerCorrect();
-          
-    } 
-    else {
-        answerWrong ();
-    }
-});    
-
-function answerCorrect(){
-  correct++
-  $("#question").html("Correct Answer!")
-  displayCorrectImage();
-  clearInterval(intervalId);
-
-}
-
-function answerWrong(){
-  $("#question").html("Incorrect Answer!")
-  incorrect++
-  displayCorrectImage();
-  clearInterval(intervalId);
-
-}
-
-function unansweredQuestion(){
-  $("#question").html("Incorrect Answer!")
-  unanswered++
-  incorrect++
-  displayCorrectImage();
-  clearInterval(intervalId);
-}
-
-
-
-function displayCorrectImage() {
-  $("#allAnswers").hide();
-  $("#correctAnswer").show();
-  $("#correctImage").show();
-  $("#correctAnswer").html(fullQuestion[questionCount].correctAnswer);  
-  $("#correctImage").html(fullQuestion[questionCount].image);
-  setTimeout(displayCorrectImage, 5000);
-  questionCount++
-
-  if (questionCount === images.length) {
-    count = 0;
-    endGame();
   }
-  else {
-    nextQuestion();
+
+  function endGame(){
+    $("#allAnswers").hide();
+    $("#startButton").show();
+    $("#question").html("Correct Answers: " + correct);
+    $("#correctAnswer").html("Incorrect Answers: " + incorrect);
+    $("#correctImages").html("Unanswered Questions: " + unanswered);
+
+
+
+
   }
-}
 
-function nextQuestion(){
-  $("#correctAnswer").hide();
-  $("#correctImage").hide();
-  $("#allAnswers").show();
-  timeRemaining = 30;
-  displayQuestion();
-
-}
-
-function endGame(){
-  $("#allAnswers").show();
-  $("#startButton").show();
-  $("#answer1").html("Correct Answers: " + correct);
-  $("#answer2").html("Incorrect Answers: " + incorrect);
-  $("#answer3").html("Unanswered Questions: " + unanswered);
-
-
-
-
-}
-
-
+// });
 
 
 
